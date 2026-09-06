@@ -20,6 +20,8 @@
 
 I rescripted my most popular Shake module because it was a disaster.. memory leaks everywhere, unoptimized uncentralized code and buggy behavior.
 
+Roblox keeps deleting the module so to github it goes.
+
 > **EXTREMELY IMPORTANT:** REMEMBER TO USE `:Remove()` WHEN YOU'RE DONE WITH A SHAKE SYSTEM TO AVOID UNWANTED MEMORY LEAKS.  
 > **THIS IS NOW REQUIRED BOTH ON SERVER AND CLIENT!!!**
 
