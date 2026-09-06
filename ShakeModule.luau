@@ -391,13 +391,6 @@ end
 
 -----------------------------CLIENT SIDE ONLY-----------------------------
 
--- Install the complete upstream CameraShaker ModuleScript as a child of this
--- module, or as ReplicatedStorage.CameraShaker. Keep its two child modules.
--- Fitted to the supplied Studio strength and temporal-feel captures at 60 FPS
--- across roughness 0.5, 1, 3, and 10. The faster clock restores acceleration
--- and jerk that the first compatibility version lacked.
--- ROTATION_SCALE multiplies a noise DIFFERENCE in radians / 6.5, not degrees.
--- These constants are not interchangeable with those in the previous adapter.
 local POSITION_SCALE = 1.363721571
 local ROTATION_SCALE = 2.158009825
 local ROUGHNESS_SCALE = 1.25
