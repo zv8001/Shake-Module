@@ -1,3 +1,5 @@
+![Shake System Reimagined](https://github.com/zv8001/Shake-Module/blob/main/CamShakeSystem.png?raw=true)
+
 # Shake System Reimagined
 
 ```text
