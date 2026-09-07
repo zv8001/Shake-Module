@@ -124,6 +124,9 @@ If you find any memory leaks tell me and I will fix them!!
 -- - RotationBias reshapes rotational shake toward specific axes (e.g. mostly roll for a dizzy feel).
 -- - Set ShakeModule.GlobalShake = false on a client to mute all shakes locally
 --   (useful for a "camera shake off" toggle in your settings menu).
+-- - Call ShakeModule.ApplyGlobalShakeReduction(Percent) on a client to reduce
+--   every shake equally. 0 keeps full strength, 50 halves it, and 100 hides it.
+--   This changes amplitude only; roughness, timing, falloff, and bias stay intact.
 -- - Shakes are disabled in VR unless AllowVRHeadsetCompatibility is enabled below (not recommended).
 
 -- Example:
@@ -162,8 +165,17 @@ ShakeSystem.GlobalShake = true
 local LoadShake
 local ClientSideLoaded = false
 local LiveShakes = {}
+local GlobalShakeReduction = 0
 
 local AllowVRHeadsetCompatibility = false --Very much not recommended can cause extreme motion sickness!!
+
+
+function ShakeSystem.ApplyGlobalShakeReduction(Percent)
+	assert(RunService:IsClient(), "ApplyGlobalShakeReduction can only be called on the client")
+	assert(type(Percent) == "number" and Percent == Percent, "Percent must be a number")
+	GlobalShakeReduction = math.clamp(Percent, 0, 100)
+	return GlobalShakeReduction
+end
 
 
 local function StartLocal()
@@ -462,6 +474,7 @@ local function UpdateClientShakes(dt)
 	local camera = workspace.CurrentCamera
 	local allowed = camera ~= nil and CanShake()
 	local combined = CFrame.new()
+	local strengthMultiplier = 1 - (GlobalShakeReduction / 100)
 
 	for id, record in pairs(ClientShakes) do
 		local folder = record.Folder
@@ -492,9 +505,10 @@ local function UpdateClientShakes(dt)
 				local delta = record.PreviousNoise and (noise - record.PreviousNoise) or Vector3.zero
 				record.PreviousNoise = noise
 				if roughness == 0 then delta = Vector3.zero end
-				local position = noise * (record.A1.Value * POSITION_SCALE * distanceScale)
+				local position = noise
+					* (record.A1.Value * POSITION_SCALE * distanceScale * strengthMultiplier)
 				local rotation = delta * record.Bias.Value
-					* (record.A2.Value * ROTATION_SCALE * distanceScale / 6.5)
+					* (record.A2.Value * ROTATION_SCALE * distanceScale * strengthMultiplier / 6.5)
 				combined = combined * CFrame.new(position)
 					* CFrame.Angles(rotation.X, rotation.Y, rotation.Z)
 			end
